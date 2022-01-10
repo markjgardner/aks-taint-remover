@@ -18,39 +18,39 @@ public class Worker : BackgroundService
     var config = KubernetesClientConfiguration.BuildDefaultConfig();
     var client = new Kubernetes(config);
 
-    _log.LogInformation("Connected to cluster");
+    _log.LogInformation($"Connected to cluster {config.Host}");
+    var nodeName = Environment.GetEnvironmentVariable("NODE_NAME");
+    _log.LogInformation($"Running on node {nodeName}");
+
 
     //TODO: Make the label selector config driven
-    var nodes = client.ListNode(labelSelector: "kubernetes.io/os=windows");
-    _log.LogInformation($"Found {nodes.Items.Count()} nodes.");
-    foreach (var n in nodes.Items)
+    var node = client.ReadNode(nodeName);
+    var newTaints = new List<V1Taint>();
+    if (node.Spec.Taints != null && node.Spec.Taints.Any())
     {
-      var newTaints = new List<V1Taint>();
-      if (n.Spec.Taints != null && n.Spec.Taints.Any())
+      _log.LogInformation($"Found {node.Spec.Taints.Count()} taints on node {node.Metadata.Name}.");
+      foreach (var t in node.Spec.Taints)
       {
-        foreach (var t in n.Spec.Taints)
+        //TODO: make this config driven
+        if (t.Key != "kubernetes.azure.com/scalesetpriority"
+        || t.Value != "spot")
         {
-          //TODO: make this config driven
-          if (t.Key != "kubernetes.azure.com/scalesetpriority"
-          || t.Value != "spot")
-          {
-            _log.LogInformation($"Keeping taint {t.Key}");
-            newTaints.Add(t);
-          }
-          else
-          {
-            _log.LogInformation($"Removing taint {t.Key}");
-          }
+          _log.LogInformation($"Keeping taint {t.Key}");
+          newTaints.Add(t);
         }
-        var patch = new V1Patch(new V1Node(spec: new V1NodeSpec(taints: newTaints)), V1Patch.PatchType.MergePatch);
-        _log.LogInformation($"Submitting patch");
-        var result = await client.PatchNodeAsync(patch, n.Metadata.Name);
-        _log.LogInformation($"Patched {n.Metadata.Name}");
+        else
+        {
+          _log.LogInformation($"Removing taint {t.Key}");
+        }
       }
-      else
-      {
-        _log.LogInformation($"No taints found on node {n.Metadata.Name}");
-      }
+      var patch = new V1Patch(new V1Node(spec: new V1NodeSpec(taints: newTaints)), V1Patch.PatchType.MergePatch);
+      _log.LogInformation($"Submitting patch");
+      var result = await client.PatchNodeAsync(patch, node.Metadata.Name);
+      _log.LogInformation($"Patched {node.Metadata.Name}");
+    }
+    else
+    {
+      _log.LogInformation($"No taints found on node {node.Metadata.Name}");
     }
   }
 }
