@@ -15,7 +15,7 @@ public class Worker : BackgroundService
   protected override async Task ExecuteAsync(CancellationToken stoppingToken)
   {
     //TODO: add to DI container
-    var config = KubernetesClientConfiguration.InClusterConfig();
+    var config = KubernetesClientConfiguration.BuildDefaultConfig();
     var client = new Kubernetes(config);
 
     _log.LogInformation("Connected to cluster");
@@ -26,24 +26,31 @@ public class Worker : BackgroundService
     foreach (var n in nodes.Items)
     {
       var newTaints = new List<V1Taint>();
-      foreach (var t in n.Spec.Taints)
+      if (n.Spec.Taints != null && n.Spec.Taints.Any())
       {
-        //TODO: make this config driven
-        if (t.Key != "kubernetes.azure.com/scalesetpriority"
-        || t.Value != "spot")
+        foreach (var t in n.Spec.Taints)
         {
-          _log.LogInformation($"Keeping taint {t.Key}");
-          newTaints.Add(t);
+          //TODO: make this config driven
+          if (t.Key != "kubernetes.azure.com/scalesetpriority"
+          || t.Value != "spot")
+          {
+            _log.LogInformation($"Keeping taint {t.Key}");
+            newTaints.Add(t);
+          }
+          else
+          {
+            _log.LogInformation($"Removing taint {t.Key}");
+          }
         }
-        else
-        {
-          _log.LogInformation($"Removing taint {t.Key}");
-        }
+        var patch = new V1Patch(new V1Node(spec: new V1NodeSpec(taints: newTaints)), V1Patch.PatchType.MergePatch);
+        _log.LogInformation($"Submitting patch");
+        var result = await client.PatchNodeAsync(patch, n.Metadata.Name);
+        _log.LogInformation($"Patched {n.Metadata.Name}");
       }
-      var patch = new V1Patch(new V1Node(spec: new V1NodeSpec(taints: newTaints)), V1Patch.PatchType.MergePatch);
-      _log.LogInformation($"Submitting patch");
-      var result = await client.PatchNodeAsync(patch, n.Metadata.Name);
-      _log.LogInformation($"Patched {n.Metadata.Name}");
+      else
+      {
+        _log.LogInformation($"No taints found on node {n.Metadata.Name}");
+      }
     }
   }
 }
