@@ -1,2 +1,10 @@
-# aks-taint-remover
-A simple K8s operator to automatically remove taints (useful if running spot instance node pools)
+# AKS TaintRemover
+This project represents a simple operator that will remove the NoSchedule taint automatically added to nodes provisioned on [Azure Spot VMs](https://azure.microsoft.com/en-us/services/virtual-machines/spot/).
+
+Currently the project is hardcoded to only remove the ```kubernetes.azure.com/scalesetpriority=spot``` taint and is target specifically at Windows nodes.
+
+## Design
+The pod hosts a simple console app that only inspects the node it is scheduled on and only runs once. As such it runs as an init container within a daemonset. This allows the user to leverage native kubernetes scheduling to select which nodes need to be un-tainted.
+
+### Resources
+[kubernetes-client/csharp](https://github.com/kubernetes-client/csharp)
