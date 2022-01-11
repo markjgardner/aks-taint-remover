@@ -1,0 +1,13 @@
+on:
+  push:
+    branches:
+    - main
+    # for workflow dev
+    - github
+jobs:
+  build-linux-image:
+    uses: markjgardner/aks-taint-remover/.github/workflows/tempalte.yaml@main
+    with:
+      baseTag: "6.0-alpine"
+      runner: ubuntu-latest
+ 

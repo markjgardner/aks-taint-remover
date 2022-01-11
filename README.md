@@ -8,7 +8,7 @@ The pod hosts a simple console app that only inspects the node it is scheduled o
 
 ## TODO
 * Make the image multi-arch
-* Move target tains to config (not hard coded)
+* Move target taints to config (not hard coded)
 * Support Helm deployment
 
 ### Resources

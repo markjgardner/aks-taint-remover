@@ -1,5 +1,7 @@
+ARG BASE_TAG=6.0
+
 # https://hub.docker.com/_/microsoft-dotnet
-FROM mcr.microsoft.com/dotnet/sdk:6.0-nanoserver-1809 AS build
+FROM mcr.microsoft.com/dotnet/sdk:$BASE_TAG AS build
 WORKDIR /source
 
 # copy csproj and restore as distinct layers
@@ -11,7 +13,7 @@ COPY . .
 RUN dotnet publish -c release -o /app --no-restore
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/runtime:6.0-nanoserver-1809
+FROM mcr.microsoft.com/dotnet/runtime:$BASE_TAG
 WORKDIR /app
 COPY --from=build /app .
 ENTRYPOINT ["TaintRemover.exe"]
