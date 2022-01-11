@@ -1,6 +1,12 @@
 on:
   workflow_call:
     inputs:
+      version:
+        required: true
+        type: string
+      registryName:
+        required: true
+        type: string
       baseTag:
         required: true
         type: string
@@ -14,8 +20,6 @@ jobs:
       run:
         working-directory: ./src
     env:
-      ACR_BASE_URI: mjgcontainers.azurecr.io
-      VERSION: "0.4.$GITHUB_RUN_NUMBER"
       BASE_TAG: ${{ inputs.baseTag }}
     steps:
     - uses: actions/checkout@v2
