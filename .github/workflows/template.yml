@@ -14,11 +14,8 @@ jobs:
       run:
         working-directory: ./src
     env:
-      ACR_BASE_URI: mjgcontainers.azurecr.io
-      VERSION: "0.4.$GITHUB_RUN_NUMBER"
       BASE_TAG: ${{ inputs.baseTag }}
-      IMAGE_TAG: "$ACR_BASE_URI/taintremover:$VERSION-$BASE_TAG"
     steps:
     - uses: actions/checkout@v2
     - name: Build Linux Image
-      run: docker build -t $IMAGE_TAG --build-arg BASE_TAG=$BASE_TAG .
+      run: docker build -t $ACR_BASE_URI/taintremover:$VERSION-$BASE_TAG --build-arg BASE_TAG=$BASE_TAG .

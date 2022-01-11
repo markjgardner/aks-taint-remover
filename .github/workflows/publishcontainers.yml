@@ -4,6 +4,9 @@ on:
     - main
     # for workflow dev
     - github
+env:
+  ACR_BASE_URI: mjgcontainers.azurecr.io
+  VERSION: "0.4.$GITHUB_RUN_NUMBER"
 jobs:
   build-linux-image:
     uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@github
