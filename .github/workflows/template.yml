@@ -18,4 +18,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build Linux Image
-      run: docker build -t $ACR_BASE_URI/taintremover:$VERSION-$BASE_TAG --build-arg BASE_TAG=$BASE_TAG .
+      run: docker build -t "$ACR_BASE_URI/taintremover:$VERSION-$BASE_TAG" --build-arg BASE_TAG=$BASE_TAG .
