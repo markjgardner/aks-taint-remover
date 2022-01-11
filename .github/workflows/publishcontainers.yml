@@ -6,7 +6,7 @@ on:
     - github
 jobs:
   build-linux-image:
-    uses: markjgardner/aks-taint-remover/.github/workflows/tempalte.yaml@main
+    uses: markjgardner/aks-taint-remover/.github/workflows/tempalte.yaml@github
     with:
       baseTag: "6.0-alpine"
       runner: ubuntu-latest
