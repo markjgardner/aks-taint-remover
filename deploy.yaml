@@ -39,9 +39,9 @@ spec:
         effect: NoSchedule
       nodeSelector:
         kubernetes.io/os: windows
-      containers:
+      initContainers:
       - name: taintremover
-        image: mjgcontainers.azurecr.io/taintremover-win:0.2-2019ltsc
+        image: mjgcontainers.azurecr.io/taintremover-win:0.3-nanoserver1809
         resources:
           limits:
             memory: 200Mi
@@ -53,4 +53,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+      containers:
+        - name: pause
+          image: k8s.gcr.io/pause:3.5
       terminationGracePeriodSeconds: 30
