@@ -31,7 +31,7 @@ jobs:
         run: docker build -t "${{ env.FULL_IMAGE_NAME }}" --build-arg BASE_TAG=${{ inputs.baseTag }} .
       
       - name: Log in to the Container registry
-        uses: docker/login-action
+        uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
