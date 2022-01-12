@@ -10,7 +10,7 @@ on:
     outputs:
       fullImageName:
         description: "The fully qualified name of the built image"
-        value: ${{ job.build-image.outputs.imageName }}
+        value: ${{ jobs.build-image.outputs.imageName }}
 jobs:
   build-image:
     runs-on: ${{ inputs.runner }}
