@@ -24,8 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-linux-image, build-windows2019-image, build-windows2022-image]
     steps: 
-      - run: docker manifest create ghcr.io/markjgardner/taintremover:0.4.${{ github.run_number }} \
-          --amend ${{ needs.build-linux-image.outputs.fullImageName }} \
-          --amend ${{ needs.build-windows2019-image.outputs.fullImageName }} \
+      - run: docker manifest create ghcr.io/markjgardner/taintremover:0.4.${{ github.run_number }} 
+          --amend ${{ needs.build-linux-image.outputs.fullImageName }} 
+          --amend ${{ needs.build-windows2019-image.outputs.fullImageName }} 
           --amend ${{ needs.build-windows2022-image.outputs.fullImageName }}
       - run: docker manifest push ghcr.io/markjgardner/taintremover:0.4.${{ github.run_number }}
