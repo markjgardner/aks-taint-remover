@@ -28,7 +28,7 @@ jobs:
     env:
       FULL_IMAGE_NAME: "${{ inputs.imageName }}-${{ inputs.baseTag }}"
     outputs:
-      name: ${{ steps.setOutput.outputs.imageName }}
+      imageName: ${{ steps.setOutput.outputs.imageName }}
     steps:
       - uses: actions/checkout@v2
       
