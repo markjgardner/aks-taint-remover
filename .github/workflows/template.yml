@@ -12,6 +12,9 @@ on:
         required: false
         type: string
         default: ghcr.io
+      baseTag:
+        required: true
+        type: string
     outputs:
       fullImageName:
         description: "The fully qualified name of the built image"
