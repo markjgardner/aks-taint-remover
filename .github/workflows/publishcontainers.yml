@@ -30,6 +30,6 @@ jobs:
     needs: [build-linux-image, build-windows2019-image, build-windows2022-image]
     steps: 
       - run: docker manifest create ${{ env.IMAGE_NAME }} \
-        --amend ${{ needs.build-linux-image.outputs.fullImageName }} \
-        --amend ${{ needs.build-windows2019-image.outputs.fullImageName }} \
-        --amend ${{ needs.build-windows2022-image.outputs.fullImageName }}
+          --amend ${{ needs.build-linux-image.outputs.fullImageName }} \
+          --amend ${{ needs.build-windows2019-image.outputs.fullImageName }} \
+          --amend ${{ needs.build-windows2022-image.outputs.fullImageName }}
