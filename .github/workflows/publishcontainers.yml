@@ -4,7 +4,17 @@ on:
     - main
     # for workflow dev
     - github
+env:
+  ACR_BASE_URI: mjgcontainers.azurecr.io
+  VERSION: "0.4"
 jobs:
+  test:    
+    runs-on: ${{ inputs.runner }}
+    env:
+      FULL_IMAGE_NAME: "$ACR_BASE_URI/taintremover:$VERSION.$GITHUB_RUN_NUMBER-${{ inputs.baseTag }}"
+    steps:
+    - run: echo "Building $FULL_IMAGE_NAME"
+
   build-linux-image:
     uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@github
     with:
