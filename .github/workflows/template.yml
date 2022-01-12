@@ -22,5 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build Linux Image
-      run: docker build -t "${{ inputs.registryName }}/taintremover:${{ inputs.version }}-${{ inputs.baseTag }}" \
-        --build-arg BASE_TAG=${{ inputs.baseTag }} .
+      run: \
+        echo "Building ${{ inputs.registryName }}/taintremover:${{ inputs.version }}-${{ inputs.baseTag }}"
+        docker build -t "${{ inputs.registryName }}/taintremover:${{ inputs.version }}-${{ inputs.baseTag }}" \
+          --build-arg BASE_TAG=${{ inputs.baseTag }} .
