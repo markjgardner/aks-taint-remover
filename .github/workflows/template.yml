@@ -20,6 +20,5 @@ jobs:
       FULL_IMAGE_NAME: "$ACR_BASE_URI/taintremover:$VERSION.$GITHUB_RUN_NUMBER-${{ inputs.baseTag }}"
     steps:
     - uses: actions/checkout@v2
-    - run: echo "Building $FULL_IMAGE_NAME"
     - name: Build Linux Image
-      run: docker build -t "$FULL_IMAGE_NAME" --build-arg BASE_TAG=${{ inputs.baseTag }} .
+      run: docker build -t "${{ FULL_IMAGE_NAME }}" --build-arg BASE_TAG=${{ inputs.baseTag }} .
