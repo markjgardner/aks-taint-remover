@@ -13,6 +13,9 @@ on:
       runner:
         required: true
         type: string
+env:
+  ACR_BASE_URI: mjgcontainers.azurecr.io
+  VERSION: "0.4.$GITHUB_RUN_NUMBER"
 jobs:
   build-image:
     runs-on: ${{ inputs.runner }}
