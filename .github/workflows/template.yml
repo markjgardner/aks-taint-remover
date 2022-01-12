@@ -2,8 +2,9 @@ on:
   workflow_call:
     inputs:
       imageName:
-        required: true
+        required: false
         type: string
+        default: "ghcr.io/markjgardner/taintremover:0.4.${{ github.run_number }}"
       runner:
         required: true
         type: string
