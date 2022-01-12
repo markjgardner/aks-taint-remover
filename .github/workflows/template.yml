@@ -18,7 +18,9 @@ jobs:
       run:
         working-directory: ./src
     env:
-      FULL_IMAGE_NAME: "${{ env.REGISTRY }}/${{ github.actor }}/taintremover:${{ env.VERSION }}.${{ github.run_number }}-${{ inputs.baseTag }}"
+      REGISTRY: ghcr.io
+      VERSION: "0.4"
+      FULL_IMAGE_NAME: "$REGISTRY/${{ github.actor }}/taintremover:$VERSION.${{ github.run_number }}-${{ inputs.baseTag }}"
     outputs:
       name: ${{ steps.setOutput.outputs.imageName }}
     steps:
