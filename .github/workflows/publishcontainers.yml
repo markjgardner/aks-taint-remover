@@ -4,6 +4,9 @@ on:
     - main
     # for workflow dev
     - github
+env:
+  REGISTRY: ghcr.io
+  VERSION: "0.4"
 jobs:
   build-linux-image:
     uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@github

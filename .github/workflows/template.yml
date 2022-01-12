@@ -7,9 +7,10 @@ on:
       runner:
         required: true
         type: string
-env:
-  ACR_BASE_URI: mjgcontainers.azurecr.io
-  VERSION: "0.4"
+    outputs:
+      fullImageName:
+        description: "The fully qualified name of the built image"
+        value: ${{ job.build-image.outputs.imageName }}
 jobs:
   build-image:
     runs-on: ${{ inputs.runner }}
@@ -17,8 +18,24 @@ jobs:
       run:
         working-directory: ./src
     env:
-      FULL_IMAGE_NAME: "$ACR_BASE_URI/taintremover:$VERSION.$GITHUB_RUN_NUMBER-${{ inputs.baseTag }}"
+      FULL_IMAGE_NAME: "${{ env.REGISTRY }}/${{ github.actor }}/taintremover:${{ env.VERSION }}.${{ github.run_number }}-${{ inputs.baseTag }}"
+    outputs:
+      name: ${{ steps.setOutput.outputs.imageName }}
     steps:
     - uses: actions/checkout@v2
+    
+    - id: setOutput
+      run: echo "::set-output name=imageName:: ${{ env.FULL_IMAGE_NAME }}"
+
     - name: Build Linux Image
       run: docker build -t "${{ env.FULL_IMAGE_NAME }}" --build-arg BASE_TAG=${{ inputs.baseTag }} .
+    
+    - name: Log in to the Container registry
+      uses: docker/login-action
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push image to registry
+      run: docker push ${{ env.FULL_IMAGE_NAME }}
