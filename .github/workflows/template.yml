@@ -1,7 +1,7 @@
 on:
   workflow_call:
     inputs:
-      baseTag:
+      imageName:
         required: true
         type: string
       runner:
@@ -11,10 +11,6 @@ on:
         required: false
         type: string
         default: ghcr.io
-      version:
-        required: false
-        type: string
-        default: 0.4
     outputs:
       fullImageName:
         description: "The fully qualified name of the built image"
@@ -26,7 +22,7 @@ jobs:
       run:
         working-directory: ./src
     env:
-      FULL_IMAGE_NAME: "${{ inputs.registry }}/${{ github.actor }}/taintremover:${{ inputs.version }}.${{ github.run_number }}-${{ inputs.baseTag }}"
+      FULL_IMAGE_NAME: "${{ inputs.imageName }}-${{ inputs.baseTag }}"
     outputs:
       name: ${{ steps.setOutput.outputs.imageName }}
     steps:
