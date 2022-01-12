@@ -20,5 +20,4 @@ jobs:
     - uses: actions/checkout@v2
     - run: echo "Building $ACR_BASE_URI/taintremover:$VERSION-${{ inputs.baseTag }}"
     - name: Build Linux Image
-      run: docker build -t "$ACR_BASE_URI/taintremover:$VERSION.$GITHUB_RUN_NUMBER-${{ inputs.baseTag }}" \
-          --build-arg BASE_TAG=${{ inputs.baseTag }} .
+      run: docker build -t "$ACR_BASE_URI/taintremover:$VERSION.$GITHUB_RUN_NUMBER-${{ inputs.baseTag }}" --build-arg BASE_TAG=${{ inputs.baseTag }} .
