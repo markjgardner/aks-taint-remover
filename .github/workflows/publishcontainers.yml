@@ -9,7 +9,7 @@ env:
   VERSION: "0.4"
 jobs:
   test:    
-    runs-on: ${{ inputs.runner }}
+    runs-on: ubuntu-latest
     env:
       FULL_IMAGE_NAME: "$ACR_BASE_URI/taintremover:$VERSION.$GITHUB_RUN_NUMBER-${{ inputs.baseTag }}"
     steps:
