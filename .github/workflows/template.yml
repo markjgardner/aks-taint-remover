@@ -22,20 +22,20 @@ jobs:
     outputs:
       name: ${{ steps.setOutput.outputs.imageName }}
     steps:
-    - uses: actions/checkout@v2
-    
-    - id: setOutput
-      run: echo "::set-output name=imageName:: ${{ env.FULL_IMAGE_NAME }}"
+      - uses: actions/checkout@v2
+      
+      - id: setOutput
+        run: echo "::set-output name=imageName::${{ env.FULL_IMAGE_NAME }}"
 
-    - name: Build Linux Image
-      run: docker build -t "${{ env.FULL_IMAGE_NAME }}" --build-arg BASE_TAG=${{ inputs.baseTag }} .
-    
-    - name: Log in to the Container registry
-      uses: docker/login-action
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Linux Image
+        run: docker build -t "${{ env.FULL_IMAGE_NAME }}" --build-arg BASE_TAG=${{ inputs.baseTag }} .
+      
+      - name: Log in to the Container registry
+        uses: docker/login-action
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Push image to registry
-      run: docker push ${{ env.FULL_IMAGE_NAME }}
+      - name: Push image to registry
+        run: docker push ${{ env.FULL_IMAGE_NAME }}
