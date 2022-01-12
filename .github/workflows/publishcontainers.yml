@@ -28,4 +28,12 @@ jobs:
           --amend ${{ needs.build-linux-image.outputs.fullImageName }} 
           --amend ${{ needs.build-windows2019-image.outputs.fullImageName }} 
           --amend ${{ needs.build-windows2022-image.outputs.fullImageName }}
+      
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
       - run: docker manifest push ghcr.io/markjgardner/taintremover:0.4.${{ github.run_number }}
