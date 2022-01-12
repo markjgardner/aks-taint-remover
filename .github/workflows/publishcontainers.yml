@@ -4,12 +4,13 @@ on:
     - main
     # for workflow dev
     - github
+env:
+  ACR_BASE_URI: mjgcontainers.azurecr.io
+  VERSION: "0.4"
 jobs:
   build-linux-image:
     uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@github
     with:
-      registryName: "$ACR_BASE_URI"
-      version: "$VERSION"
       baseTag: "6.0-alpine"
       runner: ubuntu-latest
 #  build-windows2019-image:
