@@ -1,10 +1,12 @@
 on:
   push:
     branches:
-    - main
-    # for workflow dev
-    - github
-    - dev
+      - main
+      # for workflow dev
+      - github
+    paths:
+      - 'src/**'
+      - '.github/**'
     
 env:
   IMAGENAME: ghcr.io/markjgardner/taintremover
