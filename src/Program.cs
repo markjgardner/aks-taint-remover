@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using k8s;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -9,6 +10,10 @@ try {
     .ConfigureServices(services =>
     {
       services.AddHostedService<Worker>();
+      services.AddSingleton((s) => {
+        var config = KubernetesClientConfiguration.BuildDefaultConfig();
+        return new Kubernetes(config);
+      });
     })
     .ConfigureLogging((_, logging) => 
     {

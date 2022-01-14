@@ -5,26 +5,21 @@ using Microsoft.Extensions.Logging;
 
 public class Worker : BackgroundService
 {
+  private Kubernetes _k8s;
   private readonly ILogger<Worker> _log;
 
-  public Worker(ILogger<Worker> logger)
+  public Worker(ILogger<Worker> logger, Kubernetes client)
   {
     _log = logger;
+    _k8s = client;
   }
 
   protected override async Task ExecuteAsync(CancellationToken stoppingToken)
   {
-    //TODO: add to DI container
-    var config = KubernetesClientConfiguration.BuildDefaultConfig();
-    var client = new Kubernetes(config);
-
-    _log.LogInformation($"Connected to cluster {config.Host}");
     var nodeName = Environment.GetEnvironmentVariable("NODE_NAME");
     _log.LogInformation($"Running on node {nodeName}");
 
-
-    //TODO: Make the label selector config driven
-    var node = client.ReadNode(nodeName);
+    var node = _k8s.ReadNode(nodeName);
     var newTaints = new List<V1Taint>();
     if (node.Spec.Taints != null && node.Spec.Taints.Any())
     {
@@ -45,7 +40,7 @@ public class Worker : BackgroundService
       }
       var patch = new V1Patch(new V1Node(spec: new V1NodeSpec(taints: newTaints)), V1Patch.PatchType.MergePatch);
       _log.LogInformation($"Submitting patch");
-      var result = await client.PatchNodeAsync(patch, node.Metadata.Name);
+      var result = await _k8s.PatchNodeAsync(patch, node.Metadata.Name);
       _log.LogInformation($"Patched {node.Metadata.Name}");
     }
     else
