@@ -1,10 +1,16 @@
 on:
   workflow_call:
     inputs:
-      runner:
+      imageName:
+        required: true
+        type: string
+      versionTag:
         required: true
         type: string
       baseTag:
+        required: true
+        type: string      
+      runner:
         required: true
         type: string
     outputs:
@@ -24,7 +30,7 @@ jobs:
       
       - id: setImageName
         name: Set fully qualified image name
-        run: echo "::set-output name=imageName::${{ env.IMAGENAME }}:${{ env.TAG }}-${{ inputs.baseTag }}"
+        run: echo "::set-output name=imageName::${{ inputs.imageName }}:${{ inputs.versionTag }}-${{ inputs.baseTag }}"
 
       - name: Build image
         run: docker build -t "${{ steps.setImageName.outputs.imageName }}" --build-arg BASE_TAG=${{ inputs.baseTag }} .
