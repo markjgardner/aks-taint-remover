@@ -9,17 +9,17 @@ env:
   TAG: 0.5.${{ github.run_number }}
 jobs:
   build-linux-image:
-    uses: ${{ github.repository }}/.github/workflows/template.yml@${{ github.ref }}
+    uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@github
     with:
       baseTag: "6.0-alpine"
       runner: ubuntu-latest
   build-windows2019-image:
-    uses: ${{ github.repository }}/.github/workflows/template.yml@{{ github.ref }}
+    uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@github
     with:
       baseTag: "6.0-nanoserver-1809"
       runner: windows-2019
   build-windows2022-image:
-    uses: ${{ github.repository }}/.github/workflows/template.yml@{{ github.ref }}
+    uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@github
     with:
       baseTag: "6.0-nanoserver-ltsc2022"
       runner: windows-2022
