@@ -1,17 +1,9 @@
 on:
   workflow_call:
     inputs:
-      imageName:
-        required: false
-        type: string
-        default: "ghcr.io/markjgardner/taintremover:0.4.${{ github.run_number }}"
       runner:
         required: true
         type: string
-      registry:
-        required: false
-        type: string
-        default: ghcr.io
       baseTag:
         required: true
         type: string
@@ -25,25 +17,24 @@ jobs:
     defaults:
       run:
         working-directory: ./src
-    env:
-      FULL_IMAGE_NAME: "${{ inputs.imageName }}-${{ inputs.baseTag }}"
     outputs:
-      imageName: ${{ steps.setOutput.outputs.imageName }}
+      imageName: ${{ steps.setImageName.outputs.imageName }}
     steps:
       - uses: actions/checkout@v2
       
-      - id: setOutput
-        run: echo "::set-output name=imageName::${{ env.FULL_IMAGE_NAME }}"
+      - id: setImageName
+        name: Set fully qualified image name
+        run: echo "::set-output name=imageName::${{ env.IMAGENAME }}:${{ env.TAG }}-${{ inputs.baseTag }}"
 
-      - name: Build Linux Image
-        run: docker build -t "${{ env.FULL_IMAGE_NAME }}" --build-arg BASE_TAG=${{ inputs.baseTag }} .
+      - name: Build image
+        run: docker build -t "${{ steps.setImageName.outputs.imageName }}" --build-arg BASE_TAG=${{ inputs.baseTag }} .
       
-      - name: Log in to the Container registry
+      - name: Log in to registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ inputs.registry }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push image to registry
-        run: docker push ${{ env.FULL_IMAGE_NAME }}
+        run: docker push ${{ steps.setImageName.outputs.imageName }}
