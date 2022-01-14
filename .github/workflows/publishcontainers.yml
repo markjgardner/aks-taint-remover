@@ -23,7 +23,7 @@ jobs:
       - run: ":"
   #END HACK  
   build-linux-image:
-    uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@main
+    uses: markjgardner/taint-remover/.github/workflows/template.yml@main
     needs: hack
     with:
       imageName: ${{ needs.hack.outputs.imageName }}
@@ -31,7 +31,7 @@ jobs:
       baseTag: "6.0-alpine"
       runner: ubuntu-latest
   build-windows2019-image:
-    uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@main
+    uses: markjgardner/taint-remover/.github/workflows/template.yml@main
     needs: hack
     with:
       imageName: ${{ needs.hack.outputs.imageName }}
@@ -39,7 +39,7 @@ jobs:
       baseTag: "6.0-nanoserver-1809"
       runner: windows-2019
   build-windows2022-image:
-    uses: markjgardner/aks-taint-remover/.github/workflows/template.yml@main
+    uses: markjgardner/taint-remover/.github/workflows/template.yml@main
     needs: hack
     with:
       imageName: ${{ needs.hack.outputs.imageName }}
