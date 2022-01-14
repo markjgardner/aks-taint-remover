@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 IHost host = null;
 
@@ -22,6 +23,9 @@ try {
         options.IncludeScopes = true; 
         options.SingleLine = true; 
       });
+    })
+    .ConfigureAppConfiguration((config) => {
+      config.AddEnvironmentVariables();
     })
     .Build();
 

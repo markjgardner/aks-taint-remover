@@ -2,22 +2,27 @@ using k8s;
 using k8s.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 public class Worker : BackgroundService
 {
-  private Kubernetes _k8s;
+  private readonly Kubernetes _k8s;
   private readonly ILogger<Worker> _log;
+  private readonly IConfiguration _config;
 
-  public Worker(ILogger<Worker> logger, Kubernetes client)
+  public Worker(ILogger<Worker> logger, IConfiguration config, Kubernetes client)
   {
     _log = logger;
+    _config = config;
     _k8s = client;
   }
 
   protected override async Task ExecuteAsync(CancellationToken stoppingToken)
   {
-    var nodeName = Environment.GetEnvironmentVariable("NODE_NAME");
-    _log.LogInformation($"Running on node {nodeName}");
+    var nodeName = _config["NODE_NAME"];    
+    var taint = new V1Taint().Parse(_config["TAINT"]);
+    
+    _log.LogInformation($"Running on node {nodeName} looking for taint {taint}");
 
     var node = _k8s.ReadNode(nodeName);
     var newTaints = new List<V1Taint>();
@@ -26,16 +31,15 @@ public class Worker : BackgroundService
       _log.LogInformation($"Found {node.Spec.Taints.Count()} taints on node {node.Metadata.Name}.");
       foreach (var t in node.Spec.Taints)
       {
-        //TODO: make this config driven
-        if (t.Key != "kubernetes.azure.com/scalesetpriority"
-        || t.Value != "spot")
+        if (t.Key == taint.Key && t.Effect == taint.Effect
+          && (taint.Value == null || t.Value == taint.Value))
         {
-          _log.LogInformation($"Keeping taint {t.Key}");
-          newTaints.Add(t);
+          _log.LogInformation($"Removing taint {t.Key}");
         }
         else
         {
-          _log.LogInformation($"Removing taint {t.Key}");
+          _log.LogInformation($"Keeping taint {t.Key}");
+          newTaints.Add(t);
         }
       }
       var patch = new V1Patch(new V1Node(spec: new V1NodeSpec(taints: newTaints)), V1Patch.PatchType.MergePatch);

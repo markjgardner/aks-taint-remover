@@ -4,6 +4,7 @@ on:
     - main
     # for workflow dev
     - github
+    - dev
     
 env:
   IMAGENAME: ghcr.io/markjgardner/taintremover

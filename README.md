@@ -8,7 +8,7 @@ The app intentionally only inspects the current host node. Node selection should
 
 ## TODO
 * ~~Make the image multi-arch~~
-* Move target taints to config (not hard coded)
+* ~~Move target taints to config (not hard coded)~~
 * Support Helm deployment
 * Support generic k8s deployment (not just AKS)
 
