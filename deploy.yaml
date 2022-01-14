@@ -41,7 +41,7 @@ spec:
         kubernetes.io/os: windows
       initContainers:
       - name: taintremover
-        image: ghcr.io/markjgardner/taintremover:0.4.38
+        image: ghcr.io/markjgardner/taintremover:0.5.47
         resources:
           limits:
             memory: 200Mi
@@ -53,6 +53,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        - name: TAINT
+          value: kubernetes.azure.com/scalesetpriority=spot:NoSchedule
       containers:
         - name: pause
           image: k8s.gcr.io/pause:3.5
